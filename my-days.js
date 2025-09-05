@@ -194,7 +194,7 @@ async function showMenu(codeFilename, gitHubUrl) {
 
 async function editJsonConfig() {
     // dataList必定是现有配置或默认配置
-    let currentJson = JSON.stringify(dataList, null, 2);
+    let currentJson = JSON.stringify(dataList);
 
     const returnVal = await promptForText("Edit JSON", [currentJson]);
     const newJson = returnVal.textFieldValue(0);
@@ -206,10 +206,10 @@ async function editJsonConfig() {
             fileManager.writeString(dataPath, newJson);
 
             // 显示成功提示
-            await QuickLook.present("配置已保存", "JSON配置已成功更新");
+            await generateAlert("JSON配置已成功更新")
         } catch (e) {
             // 显示错误提示
-            await QuickLook.present("格式错误", "请输入有效的JSON格式\n\n错误: " + e.message);
+            await generateAlert("请输入有效的JSON格式\n\n错误: " + e.message)
             // 重新编辑
             await editJsonConfig();
         }
