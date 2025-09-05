@@ -179,7 +179,7 @@ async function showMenu(codeFilename, gitHubUrl) {
 
     if (response == menu.preview) {
         const widget = await createWidget();
-        await widget.presentSmall();
+        await widget.presentMedium();
     }
 
     if (response == menu.update) {
