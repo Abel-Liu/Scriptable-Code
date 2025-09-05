@@ -49,10 +49,34 @@ switch (widgetSize) {
         titleFontSize = 20;
         dateFontSize = 20;
         rowSpacing = 6;
-        padding = 12;
+        padding = 10;
         break;
 }
 
+
+// 检测是否为深色模式
+const isDarkMode = Device.isUsingDarkAppearance();
+
+// 设置颜色方案
+const colors = {
+    // 浅色模式颜色
+    light: {
+        widgetBg: new Color("#f0f0f0"),  // 小组件背景（浅灰色）
+        rowBg: new Color("#ffffff"),     // 行背景（白色）
+        titleText: new Color("#333333"), // 标题文字颜色
+        dateText: new Color("#666666")   // 日期文字颜色
+    },
+    // 深色模式颜色
+    dark: {
+        widgetBg: new Color("#2c2c2e"),  // 小组件背景（深灰色）
+        rowBg: new Color("#3a3a3c"),     // 行背景（中灰色）
+        titleText: new Color("#e0e0e0"), // 标题文字颜色
+        dateText: new Color("#b0b0b0")   // 日期文字颜色
+    }
+};
+
+// 应用当前模式的颜色
+const currentColors = isDarkMode ? colors.dark : colors.light;
 
 // 计算两个日期之间的年、月、天差值
 function calculateTimeDifference(target) {
@@ -168,7 +192,7 @@ async function showMenu(codeFilename, gitHubUrl) {
 // 创建小组件内容
 async function createWidget() {
     const widget = new ListWidget();
-    widget.backgroundColor = new Color("#e6e6e6");
+    widget.backgroundColor = currentColors.widgetBg;
     widget.setPadding(padding, padding, padding, padding);
 
     // 2. 创建主垂直Stack（承载所有行）
@@ -182,19 +206,21 @@ async function createWidget() {
         const rowHorizontalStack = mainVerticalStack.addStack();
         rowHorizontalStack.layoutHorizontally();
         rowHorizontalStack.width = widget.width; // 占满小组件宽度
-        rowHorizontalStack.backgroundColor = new Color("#ffffff")
+        rowHorizontalStack.backgroundColor = currentColors.rowBg;
+        rowHorizontalStack.cornerRadius = 8;  // 圆角
+        rowHorizontalStack.setPadding(6, 8, 6, 8);  // 行内边距
 
         // 3.2 添加Title列（左对齐）
         const titleText = rowHorizontalStack.addText(item.title);
         titleText.font = Font.regularSystemFont(titleFontSize);
-        titleText.textColor = new Color("#333333");
+        titleText.textColor = currentColors.titleText;
         titleText.leftAlignText();
         rowHorizontalStack.addSpacer(); // 用Spacer推挤date到右侧
 
         // 3.3 添加Date列（右对齐）
         const dateText = rowHorizontalStack.addText(formatTimeString(calculateTimeDifference(new Date(item.date))));
         dateText.font = Font.regularSystemFont(dateFontSize);
-        dateText.textColor = new Color("#1d1d1f");
+        dateText.textColor = currentColors.dateText;
         dateText.rightAlignText();
     }
 
