@@ -140,8 +140,8 @@ async function generateAlert(title, options, message) {
 }
 
 // Default prompt for text field values.
-async function promptForText(title, values, keys, message) {
-    return await generatePrompt(title, message, null, values, keys)
+async function promptForText(title, textvals, placeholders, message) {
+    return await generatePrompt(title, message, null, textvals, placeholders)
 }
 
 // Generic implementation of an alert.
@@ -196,8 +196,8 @@ async function editJsonConfig() {
     // dataList必定是现有配置或默认配置
     let currentJson = JSON.stringify(dataList, null, 2);
 
-    // 显示多行输入框
-    const newJson = await QuickLook.presentTextInput("Edit JSON", currentJson, true);
+    const returnVal = await promptForText("Edit JSON", [currentJson]);
+    const newJson = returnVal.textFieldValue(0);
 
     if (newJson !== null) {
         try {
