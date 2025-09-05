@@ -48,7 +48,7 @@ switch (widgetSize) {
     case "large":
         titleFontSize = 20;
         dateFontSize = 20;
-        rowSpacing = 6;
+        rowSpacing = 8;
         padding = 10;
         break;
 }
@@ -64,7 +64,7 @@ const colors = {
         widgetBg: new Color("#f0f0f0"),  // 小组件背景（浅灰色）
         rowBg: new Color("#ffffff"),     // 行背景（白色）
         titleText: new Color("#333333"), // 标题文字颜色
-        dateText: new Color("#666666")   // 日期文字颜色
+        dateText: new Color("#333333")   // 日期文字颜色
     },
     // 深色模式颜色
     dark: {
