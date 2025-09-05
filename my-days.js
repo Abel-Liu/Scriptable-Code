@@ -57,7 +57,7 @@ switch (widgetSize) {
 // 计算两个日期之间的年、月、天差值
 function calculateTimeDifference(target) {
     const now = new Date();
-    const diffInMs = now - target;
+    let diffInMs = now - target;
 
     // 如果目标日期在未来，调换
     if (diffInMs < 0) {
