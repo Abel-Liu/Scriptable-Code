@@ -166,10 +166,13 @@ async function generatePrompt(title, message, options, textvals, placeholders) {
 async function showMenu(codeFilename, gitHubUrl) {
     const menu = {
         preview: "Show widget preview",
+        edit: "Edit config",
         update: "Update code",
         exit: "Exit",
     }
-    const menuOptions = [menu.preview, menu.update, menu.exit]
+
+    //返回值是index，正好对应数组的index
+    const menuOptions = [menu.preview, menu.edit, menu.update, menu.exit]
     const response = menuOptions[await generateAlert(`${codeFilename} Menu`, menuOptions)]
 
     if (response == menu.preview) {
@@ -181,7 +184,36 @@ async function showMenu(codeFilename, gitHubUrl) {
         const success = await downloadCode(codeFilename, gitHubUrl)
         return await generateAlert(success ? "Update complete." : "Update failed. Please try again later.")
     }
+
+    if (response == menu.edit) {
+        await editJsonConfig();
+    }
+
     return
+}
+
+async function editJsonConfig() {
+    // dataList必定是现有配置或默认配置
+    let currentJson = JSON.stringify(dataList, null, 2);
+
+    // 显示多行输入框
+    const newJson = await QuickLook.presentTextInput("Edit JSON", currentJson, true);
+
+    if (newJson !== null) {
+        try {
+            // 验证JSON格式
+            JSON.parse(newJson);
+            fileManager.writeString(dataPath, newJson);
+
+            // 显示成功提示
+            await QuickLook.present("配置已保存", "JSON配置已成功更新");
+        } catch (e) {
+            // 显示错误提示
+            await QuickLook.present("格式错误", "请输入有效的JSON格式\n\n错误: " + e.message);
+            // 重新编辑
+            await editJsonConfig();
+        }
+    }
 }
 
 // 创建小组件内容
