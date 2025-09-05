@@ -208,14 +208,14 @@ async function createWidget() {
         // 3.2 添加Title列（左对齐）
         const titleText = rowHorizontalStack.addText(item.title);
         titleText.font = Font.regularSystemFont(titleFontSize);
-        titleText.textColor = titleText;
+        titleText.textColor = titleTextColor;
         titleText.leftAlignText();
         rowHorizontalStack.addSpacer(); // 用Spacer推挤date到右侧
 
         // 3.3 添加Date列（右对齐）
         const dateText = rowHorizontalStack.addText(formatTimeString(calculateTimeDifference(new Date(item.date))));
         dateText.font = Font.regularSystemFont(dateFontSize);
-        dateText.textColor = dateText;
+        dateText.textColor = dateTextColor;
         dateText.rightAlignText();
     }
 
