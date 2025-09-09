@@ -191,13 +191,15 @@ async function showMenu(codeFilename, gitHubUrl) {
 
         if (preview_type != preview_menu.exit) {
             const multiLineCode = `
-                await widget.present${preview_type}();
+                return (async () => {
+                    await widget.present${preview_type}();
+                })();
                 `;
 
             const previewFun = new Function('widget', multiLineCode);
 
             const widget = await createWidget();
-            previewFun(widget);
+            await previewFun(widget);
         }
     }
 
