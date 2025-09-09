@@ -209,7 +209,7 @@ async function showMenu(codeFilename, gitHubUrl) {
 
         if (preview_type != preview_menu.exit) {
             if (preview_type == "Small" || preview_type == "Medium" || preview_type == "Large") {
-                ({ titleFontSize, dateFontSize, rowSpacing, padding } = getWidgetStyles(preview_type.toLocaleLowerCase()));
+                ({ titleFontSize, dateFontSize, rowSpacing, padding } = getWidgetStyles(preview_type.toLowerCase()));
             }
 
             const multiLineCode = `
@@ -220,7 +220,7 @@ async function showMenu(codeFilename, gitHubUrl) {
 
             const previewFun = new Function('widget', multiLineCode);
 
-            const widget = await createWidget();
+            const widget = await createWidget(preview_type.toLowerCase());
             await previewFun(widget);
         }
     }
@@ -261,8 +261,10 @@ async function editJsonConfig() {
     }
 }
 
-async function createWidget() {
-    const isLockScreen = config.widgetFamily?.startsWith("accessory");
+
+async function createWidget(widgetFamily = "") {
+    family = widgetFamily ?? config.widgetFamily;
+    const isLockScreen = family?.startsWith("accessory");
     return isLockScreen ? await createAccessoryWidget() : await createNormalWidget();
 }
 
