@@ -35,23 +35,41 @@ try {
 // 获取当前小组件尺寸
 const widgetSize = config.widgetFamily || "medium"; // 默认中等尺寸
 
+let { titleFontSize, dateFontSize, rowSpacing, padding } = getWidgetStyles(widgetSize);
+
 // 根据尺寸设置不同的字体大小和行间距
-let titleFontSize, dateFontSize, rowSpacing, padding;
-switch (widgetSize) {
-    case "small":
-        titleFontSize = 13;
-        dateFontSize = 13;
-        rowSpacing = 4;
-        padding = 4;
-        break;
-    case "medium":
-    case "large":
-        titleFontSize = 20;
-        dateFontSize = 20;
-        rowSpacing = 8;
-        padding = 10;
-        break;
+// 只负责普通widget，不负责lock screen
+function getWidgetStyles(widgetSize) {
+    let titleFontSize = 13;
+    let dateFontSize = 13;
+    let rowSpacing = 4;
+    let padding = 4;
+
+    switch (widgetSize) {
+        case "small":
+            titleFontSize = 13;
+            dateFontSize = 13;
+            rowSpacing = 4;
+            padding = 4;
+            break;
+        case "medium":
+        case "large":
+            titleFontSize = 20;
+            dateFontSize = 20;
+            rowSpacing = 8;
+            padding = 10;
+            break;
+    }
+
+    // 返回配置对象
+    return {
+        titleFontSize,
+        dateFontSize,
+        rowSpacing,
+        padding
+    };
 }
+
 
 const widgetBg = Color.dynamic(
     new Color("#f0f0f0"),  // 浅色模式：浅灰色背景
@@ -190,6 +208,10 @@ async function showMenu(codeFilename, gitHubUrl) {
         const preview_type = previewMenuOptions[await generateAlert("Preview", previewMenuOptions)]
 
         if (preview_type != preview_menu.exit) {
+            if (preview_type == "Small" || preview_type == "Medium" || preview_type == "Large") {
+                ({ titleFontSize, dateFontSize, rowSpacing, padding } = getWidgetStyles(preview_type.toLocaleLowerCase()));
+            }
+
             const multiLineCode = `
                 return (async () => {
                     await widget.present${preview_type}();
