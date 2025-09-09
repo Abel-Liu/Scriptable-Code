@@ -176,8 +176,29 @@ async function showMenu(codeFilename, gitHubUrl) {
     const response = menuOptions[await generateAlert(`${codeFilename} Menu`, menuOptions)]
 
     if (response == menu.preview) {
-        const widget = await createWidget();
-        await widget.presentMedium();
+        const preview_menu = {
+            Small: "Small",
+            Medium: "Medium",
+            Large: "Large",
+            AccessoryCircular: "AccessoryCircular",
+            AccessoryRectangular: "AccessoryRectangular",
+            AccessoryInline: "AccessoryInline",
+            exit: "Exit",
+        }
+
+        const previewMenuOptions = [preview_menu.Small, preview_menu.Medium, preview_menu.Large, preview_menu.AccessoryCircular, preview_menu.AccessoryRectangular, preview_menu.AccessoryInline]
+        const preview_type = previewMenuOptions[await generateAlert("Preview", previewMenuOptions)]
+
+        if (preview_type != preview_menu.exit) {
+            const multiLineCode = `
+                await widget.present${preview_type}();
+                `;
+
+            const previewFun = new Function('widget', multiLineCode);
+
+            const widget = await createWidget();
+            previewFun(widget);
+        }
     }
 
     if (response == menu.update) {
@@ -216,18 +237,24 @@ async function editJsonConfig() {
     }
 }
 
+async function createWidget() {
+    const isLockScreen = config.widgetFamily?.startsWith("accessory");
+    return isLockScreen ? await createAccessoryWidget() : await createNormalWidget();
+}
+
 // 锁屏
 async function createAccessoryWidget() {
     const widget = new ListWidget();
     const item = dataList[0];
     const dateText = widget.addText(formatTimeString(calculateTimeDifference(new Date(item.date))));
-    dateText.font = Font.regularSystemFont(12);
+    dateText.font = Font.regularSystemFont(13);
+    dateText.centerAlignText();
 
     return widget;
 }
 
 // 创建小组件内容
-async function createWidget() {
+async function createNormalWidget() {
     const widget = new ListWidget();
     widget.backgroundColor = widgetBg;
     widget.setPadding(padding, padding, padding, padding);
@@ -266,9 +293,7 @@ async function createWidget() {
 
 // 运行脚本
 if (config.runsInWidget) {
-    const isLockScreen = config.widgetFamily?.startsWith("accessory");
-    const widget = isLockScreen ? await createAccessoryWidget() : await createWidget();
-
+    const widget = await createWidget();
     Script.setWidget(widget);
 } else {
     await showMenu(Script.name(), gitHubUrl);
