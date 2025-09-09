@@ -216,6 +216,16 @@ async function editJsonConfig() {
     }
 }
 
+// 锁屏
+async function createAccessoryWidget() {
+    const widget = new ListWidget();
+    const item = dataList[0];
+    const dateText = widget.addText(formatTimeString(calculateTimeDifference(new Date(item.date))));
+    dateText.font = Font.regularSystemFont(12);
+
+    return widget;
+}
+
 // 创建小组件内容
 async function createWidget() {
     const widget = new ListWidget();
@@ -256,8 +266,9 @@ async function createWidget() {
 
 // 运行脚本
 if (config.runsInWidget) {
-    // 小组件模式
-    const widget = await createWidget();
+    const isLockScreen = config.widgetFamily?.startsWith("accessory");
+    const widget = isLockScreen ? await createAccessoryWidget() : await createWidget();
+
     Script.setWidget(widget);
 } else {
     await showMenu(Script.name(), gitHubUrl);
