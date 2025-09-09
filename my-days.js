@@ -263,7 +263,7 @@ async function editJsonConfig() {
 
 
 async function createWidget(widgetFamily = "") {
-    family = widgetFamily ?? config.widgetFamily;
+    family = widgetFamily || config.widgetFamily;
     const isLockScreen = family?.startsWith("accessory");
     return isLockScreen ? await createAccessoryWidget() : await createNormalWidget();
 }
