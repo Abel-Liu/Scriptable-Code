@@ -271,13 +271,12 @@ async function createWidget(widgetFamily = "") {
 // 锁屏
 async function createAccessoryWidget() {
     const widget = new ListWidget();
-    widget.backgroundColor = new Color("#000000", 0.3);
-    widget.cornerRadius = 8; // 圆角
-    widget.setPadding(4, 4, 4, 4);
+    widget.addAccessoryWidgetBackground = true;
 
     const item = dataList[0];
     const dateText = widget.addText(formatTimeString(calculateTimeDifference(new Date(item.date))));
-    dateText.font = Font.regularSystemFont(13);
+    dateText.font = Font.regularSystemFont(12);
+    dateText.centerAlignText();
 
     return widget;
 }
