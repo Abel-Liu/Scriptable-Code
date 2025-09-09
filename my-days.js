@@ -274,7 +274,6 @@ async function createAccessoryWidget() {
     const item = dataList[0];
     const dateText = widget.addText(formatTimeString(calculateTimeDifference(new Date(item.date))));
     dateText.font = Font.regularSystemFont(13);
-    dateText.centerAlignText();
 
     return widget;
 }
