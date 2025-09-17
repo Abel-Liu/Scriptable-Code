@@ -61,15 +61,18 @@ async function fetchPostApi() {
 
         const request = new Request(`https://budibase.app/api/public/v1/tables/${Keychain.get(x_budibase_table_id)}/rows/search`);
         request.method = "POST";
+        request.headers = {
+            'accept': 'application/json',
+            'x-budibase-app-id': Keychain.get(x_budibase_app_id),
+            'content-type': 'application/json',
+            'x-budibase-api-key': Keychain.get(x_budibase_api_key),
+        }
 
-        request.headers["accept"] = 'application/json';
-        request.headers["content-type"] = 'application/json';
-        request.headers["x-budibase-app-id"] = Keychain.get(x_budibase_app_id);
-        request.headers["x-budibase-api-key"] = Keychain.get(x_budibase_api_key)
-
-        request.body = JSON.stringify({ query: { equal: { id: '1' } } });
+        request.body = JSON.stringify({ "query": { "equal": { "id": "1" } } });
 
         const response = await request.loadJSON();
+        if (response.status != 200)
+            return { success: false, data: response.message }
 
         return { success: true, data: response.data[0].content };
 
