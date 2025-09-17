@@ -1,6 +1,6 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
-// icon-color: cyan; icon-glyph: calculator;
+// icon-color: yellow; icon-glyph: file-alt;
 
 const gitHubUrl = "https://raw.githubusercontent.com/Abel-Liu/Scriptable-Code/refs/heads/main/my-notes.js"
 const x_budibase_api_key = "x-budibase-api-key"
