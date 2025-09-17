@@ -71,8 +71,8 @@ async function fetchPostApi() {
         request.body = JSON.stringify({ "query": { "equal": { "id": "1" } } });
 
         const response = await request.loadJSON();
-        if (response.status != 200)
-            return { success: false, data: response.message }
+        if (response.status && response.status != 200)
+            return { success: false, data: response.message || "" }
 
         return { success: true, data: response.data[0].content };
 
