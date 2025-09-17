@@ -55,7 +55,7 @@ let titleTextColor = Color.dynamic(
 
 async function fetchPostApi() {
     try {
-        if (!Keychain.contains(x_budibase_app_id) || Keychain.contains(x_budibase_api_key) || Keychain.contains(x_budibase_table_id)) {
+        if (!Keychain.contains(x_budibase_app_id) || !Keychain.contains(x_budibase_api_key) || !Keychain.contains(x_budibase_table_id)) {
             return { success: false, data: "Keychain not configured." }
         }
 
