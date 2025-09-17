@@ -47,11 +47,6 @@ const widgetBg = Color.dynamic(
     new Color("#2c2c2e")   // 深色模式：深灰色背景
 );
 
-const rowBg = Color.dynamic(
-    new Color("#ffffff"),  // 浅色模式：白色行背景
-    new Color("#3a3a3c")   // 深色模式：中灰色行背景
-);
-
 const titleTextColor = Color.dynamic(
     new Color("#333333"),  // 浅色模式：深灰色文字
     new Color("#e0e0e0")   // 深色模式：浅灰色文字
@@ -61,7 +56,7 @@ const titleTextColor = Color.dynamic(
 async function fetchPostApi() {
     try {
         if (!Keychain.contains(x_budibase_app_id) || Keychain.contains(x_budibase_api_key) || Keychain.contains(x_budibase_table_id)) {
-            return { success: false, error: "Keychain not configured." }
+            return { success: false, data: "Keychain not configured." }
         }
 
         const request = new Request(`https://budibase.app/api/public/v1/tables/${Keychain.get(x_budibase_table_id)}/rows/search`);
@@ -75,6 +70,7 @@ async function fetchPostApi() {
         request.body = JSON.stringify({ query: { equal: { id: '1' } } });
 
         const response = await request.loadJSON();
+
         return { success: true, data: response.data[0].content };
 
     } catch (error) {
@@ -206,12 +202,15 @@ async function setAPIKey() {
 }
 
 async function createWidget() {
-    const text = await fetchPostApi();
+    const res = await fetchPostApi();
+    if (!res.success)
+        titleTextColor = new Color("#ff3b30")
+
     const widget = new ListWidget();
     widget.backgroundColor = widgetBg;
     widget.setPadding(padding, padding, padding, padding);
 
-    const titleText = widget.addText(text)
+    const titleText = widget.addText(res.data)
     titleText.font = Font.regularSystemFont(titleFontSize);
     titleText.textColor = titleTextColor;
     titleText.leftAlignText();
