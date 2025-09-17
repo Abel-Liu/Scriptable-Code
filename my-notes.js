@@ -219,7 +219,7 @@ async function createWidget() {
     titleText.leftAlignText();
 
     widget.addSpacer();
-    const updateTime = widget.addText(`更新时间：${res.updated_at}`);
+    const updateTime = widget.addText(`更新时间：${new Date(res.updated_at).toLocaleString()}`);
     updateTime.font = Font.systemFont(10);
     updateTime.textColor = titleTextColor;
     updateTime.centerAlignText();
