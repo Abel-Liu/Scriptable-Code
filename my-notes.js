@@ -47,7 +47,7 @@ const widgetBg = Color.dynamic(
     new Color("#2c2c2e")   // 深色模式：深灰色背景
 );
 
-const titleTextColor = Color.dynamic(
+let titleTextColor = Color.dynamic(
     new Color("#333333"),  // 浅色模式：深灰色文字
     new Color("#e0e0e0")   // 深色模式：浅灰色文字
 );
