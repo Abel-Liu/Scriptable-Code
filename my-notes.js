@@ -30,7 +30,7 @@ function getWidgetStyles(widgetSize) {
             break;
         case "medium":
         case "large":
-            titleFontSize = 20;
+            titleFontSize = 15;
             padding = 10;
             break;
     }
@@ -43,7 +43,7 @@ function getWidgetStyles(widgetSize) {
 }
 
 const widgetBg = Color.dynamic(
-    new Color("#f0f0f0"),  // 浅色模式：浅灰色背景
+    new Color("#FFFFE0"),  // 浅色模式
     new Color("#2c2c2e")   // 深色模式：深灰色背景
 );
 
@@ -74,7 +74,7 @@ async function fetchPostApi() {
         if (response.status && response.status != 200)
             return { success: false, data: response.message || "" }
 
-        return { success: true, data: response.data[0].content };
+        return { success: true, data: response.data[0].content, updated_at: response.data[0].updated_at };
 
     } catch (error) {
         let errorMsg = "未知错误";
@@ -219,9 +219,9 @@ async function createWidget() {
     titleText.leftAlignText();
 
     widget.addSpacer();
-    const updateTime = widget.addText(`最后更新：${new Date().toLocaleTimeString()}`);
+    const updateTime = widget.addText(`更新时间：${res.updated_at}`);
     updateTime.font = Font.systemFont(10);
-    updateTime.textColor = new Color("#999999");
+    updateTime.textColor = titleTextColor;
     updateTime.centerAlignText();
     return widget;
 }
