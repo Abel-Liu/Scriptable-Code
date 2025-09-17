@@ -219,10 +219,11 @@ async function createWidget() {
     titleText.leftAlignText();
 
     widget.addSpacer();
-    const updateTime = widget.addText(`更新时间：${new Date(res.updated_at).toLocaleString()}`);
+    const updateTime = widget.addText(`编辑时间：${new Date(res.updated_at).toLocaleString()} 刷新时间：${new Date().toLocaleTimeString()}`);
     updateTime.font = Font.systemFont(10);
     updateTime.textColor = titleTextColor;
     updateTime.centerAlignText();
+
     return widget;
 }
 
