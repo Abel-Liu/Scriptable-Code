@@ -38,8 +38,6 @@ async function writeLOG(logMsg) {
     console.log(logMsg);
 }
 
-
-
 // Generate an alert with the provided array of options.
 async function generateAlert(title, options, message) {
   return await generatePrompt(title, message, options)
@@ -173,54 +171,12 @@ function encodeOverlayImage(overlayImage) {
 }
 
 function createOverlay() {
-  // Create dummy data when unable to fetch data
-  if (weatherData === null) {
-    NO_OF_HOURS = 8;
-    NO_OF_DAYS = 7;
-    weatherData = {
-      "current": { "sunrise": 1612717445, "sunset": 1612703045, "temp": "?", "weather": [{ "id": 999, "main": `${labels.checkScript}` }] },
-      "location": `${labels.unknown}`
-    }
-    weatherData.current.dt = Math.round(new Date().getTime() / 1000);
-    let t0 = Math.round(new Date().getTime() / 1000);
-    weatherData.hourly = [];
-    for (let i = 0; i < NO_OF_HOURS; i++) {
-      weatherData.hourly[i] = {};
-      weatherData.hourly[i].dt = t0;
-      weatherData.hourly[i].temp = 0;
-      weatherData.hourly[i].pop = 0;
-      weatherData.hourly[i].weather = [];
-      weatherData.hourly[i].weather[0] = {};
-      weatherData.hourly[i].weather[0].id = 999;
-      t0 = t0 + 3600;
-    }
-    t0 = Math.round(new Date().getTime() / 1000);
-    t1 = 0;
-    weatherData.daily = [];
-    for (let i = 0; i < NO_OF_DAYS; i++) {
-      weatherData.daily[i] = {};
-      weatherData.daily[i].dt = t0;
-      weatherData.daily[i].temp = {};
-      weatherData.daily[i].temp.day = 0;
-      weatherData.daily[i].weather = [];
-      weatherData.daily[i].weather[0] = {};
-      weatherData.daily[i].weather[0].id = 999;
-      t0 = t0 + 86400;
-    }
-  }
 
-  const blockWidth = 80;
-  const blockHeight = 50;
-  const lineWidth = 5;
-  const pathColor = "#FFFFFF";
   const pathAlpha = ALPHA;
   let popPathAlpha = pathAlpha + 0.1;
   if (popPathAlpha > 1) popPathAlpha = 1;
-  const pathFillColor = ACCENT_COLOR;
   const textColor = "#FFFFFF";
   const textColor1 = "#BDC0C3";
-  const pathHeight = 100;
-  let yStepNumbers = 10;
   let xStart = 50;
   let yCenter = DEVICE_RESOLUTION.height / 2;
   let yStart = yCenter - 250;
@@ -229,17 +185,17 @@ function createOverlay() {
   imgCanvas.size = DEVICE_RESOLUTION;
 
   /* ------------------------------------------------------------------------------------------
-  PART 1: Top section with Location + Weather + Description details
+  PART 1:
   ------------------------------------------------------------------------------------------ */
-  // Current weather symbol
+  // symbol
   imgCanvas.setFont(allfonts.large.font);
   imgCanvas.setTextAlignedLeft();
   imgCanvas.setTextColor(new Color(textColor));
 
   // 左icon
-  weatherSymbol = SFSymbol.named("snow");
-  weatherSymbol.applyFont(allfonts.big.font);
-  image = weatherSymbol.image;
+  symbol = SFSymbol.named("snow");
+  symbol.applyFont(allfonts.big.font);
+  image = symbol.image;
   r = new Rect(xStart, yStart, image.size.width, image.size.height);
   imgCanvas.drawImageInRect(image, r);
 
