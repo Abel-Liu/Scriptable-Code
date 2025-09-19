@@ -222,7 +222,7 @@ function createOverlay() {
   imgCanvas.setTextAlignedLeft();
   imgCanvas.setTextColor(new Color(textColor));
   r = new Rect(xStart, yStart, DEVICE_RESOLUTION.width, 100);
-  imgCanvas.drawTextInRect(`${labels.next} ${hours + 1} ${labels.hours}`, r);
+  imgCanvas.drawTextInRect("next 888", r);
 
   // Updated Date & Time
   imgCanvas.setFont(allfonts.small.font);
