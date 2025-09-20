@@ -32,7 +32,7 @@ async function downloadCode(filename, url) {
 
 async function writeLOG(logMsg) {
   if (!config.runsInApp && LOG_TO_FILE) {
-    fileManager.writeString(LOG_FILE, getCurrentTime() + " - " + logMsg);
+    fileManager.writeString(LOG_FILE, new Date().toLocaleString() + " - " + logMsg);
   }
   else
     console.log(logMsg);
@@ -239,19 +239,9 @@ function createOverlay() {
   imgCanvas.setTextAlignedRight();
   imgCanvas.setTextColor(new Color(textColor1));
   r = new Rect(xStart, yStart + 25, DEVICE_RESOLUTION.width - 100, 100);
-  imgCanvas.drawTextInRect(`Updated at ${getCurrentTime()}`, r);
+  imgCanvas.drawTextInRect(`Updated at ${new Date().toLocaleTimeString()}}`, r);
 
   newImage = imgCanvas.getImage();
   writeLOG("Overlay created successfully");
   return newImage;
-}
-
-function getCurrentTime() {
-  const date = new Date();
-  const d = "0" + date.getDate();
-  const m = "0" + (date.getMonth() + 1);
-  const y = date.getFullYear().toString();
-  const H = "0" + date.getHours();
-  const M = "0" + date.getMinutes();
-  return H.substr(-2) + ":" + M.substr(-2);
 }
