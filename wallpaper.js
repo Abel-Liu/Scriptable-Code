@@ -214,10 +214,10 @@ function createOverlay() {
 
   const date = getDate();
   // 当前日期
-  r = new Rect(xStart + image.size.width + 25, yStart + 10, DEVICE_RESOLUTION.width - 400, 100);
+  r = new Rect(xStart + image.size.width + 25, yStart, DEVICE_RESOLUTION.width - 400, 100);
   imgCanvas.drawTextInRect(date.date, r);
 
-  r = new Rect(xStart + image.size.width + 25, yStart + 110, DEVICE_RESOLUTION.width - 400, 100);
+  r = new Rect(xStart + image.size.width + 25, yStart + 80, DEVICE_RESOLUTION.width - 400, 100);
   imgCanvas.drawTextInRect(date.weekday, r);
 
   // right
