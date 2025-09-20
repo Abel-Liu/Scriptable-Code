@@ -230,7 +230,7 @@ async function createWidget() {
 const LOG_FILE = fileManager.joinPath(fileManager.documentsDirectory(), `${Script.name()}.log`);
 const LOG_TO_FILE = false; // Only set to true if you want to debug any issue
 
-async function writeLOG(logMsg) {
+function writeLOG(logMsg) {
     if (LOG_TO_FILE) {
         fileManager.writeString(LOG_FILE, new Date().toLocaleString() + " - " + logMsg);
     }
@@ -238,15 +238,24 @@ async function writeLOG(logMsg) {
         console.log(logMsg);
 }
 
-writeLOG(`runsInWidget:${config.runsInWidget}, runsInApp: ${config.runsInApp}`)
-writeLOG(`widgetParameter:${args.widgetParameter}`)
 
-// 运行脚本
-if (config.runsInWidget) {
+if (args.queryParameters.action && args.queryParameters.action === 'run_quiet') {
+    writeLOG(`runsInWidget:${config.runsInWidget}, runsInApp: ${config.runsInApp}, widgetParameter:${args.widgetParameter}`)
+
     const widget = await createWidget();
     Script.setWidget(widget);
-} else {
-    await showMenu(Script.name(), gitHubUrl);
-}
 
-Script.complete();
+    Safari.open('shortcuts://x-callback-url/run-shortcut?name=go_home')
+    Script.complete()
+} else {
+    if (config.runsInWidget) {
+        writeLOG(`runsInWidget:${config.runsInWidget}, runsInApp: ${config.runsInApp}, widgetParameter:${args.widgetParameter}`)
+        const widget = await createWidget();
+        Script.setWidget(widget);
+    } else {
+        writeLOG(`runsInWidget:${config.runsInWidget}, runsInApp: ${config.runsInApp}, widgetParameter:${args.widgetParameter}`)
+        await showMenu(Script.name(), gitHubUrl);
+    }
+
+    Script.complete();
+}
