@@ -227,6 +227,21 @@ async function createWidget() {
     return widget;
 }
 
+
+const LOG_FILE = fileManager.joinPath(fileManager.documentsDirectory(), `${Script.name()}.log`);
+const LOG_TO_FILE = false; // Only set to true if you want to debug any issue
+
+async function writeLOG(logMsg) {
+    if (!config.runsInApp && LOG_TO_FILE) {
+        fileManager.writeString(LOG_FILE, getCurrentTime() + " - " + logMsg);
+    }
+    else
+        console.log(logMsg);
+}
+
+writeLOG(`runsInWidget:${config.runsInWidget}, runsInApp: ${config.runsInApp}`)
+writeLOG(`widgetParameter:${args.widgetParameter}`)
+
 // 运行脚本
 if (config.runsInWidget) {
     const widget = await createWidget();
