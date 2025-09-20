@@ -219,7 +219,7 @@ async function createWidget() {
     titleText.leftAlignText();
 
     widget.addSpacer();
-    const updateTime = widget.addText(`编辑时间：${new Date(res.updated_at).toLocaleString()} 刷新时间：${new Date().toLocaleTimeString()}`);
+    const updateTime = widget.addText(`编辑时间：${new Date(res.updated_at).toLocaleString()}  刷新时间：${new Date().toLocaleTimeString()}`);
     updateTime.font = Font.systemFont(10);
     updateTime.textColor = titleTextColor;
     updateTime.centerAlignText();
@@ -238,24 +238,11 @@ function writeLOG(logMsg) {
         console.log(logMsg);
 }
 
-
-if (args.queryParameters.action && args.queryParameters.action === 'run_quiet') {
-    writeLOG(`runsInWidget:${config.runsInWidget}, runsInApp: ${config.runsInApp}, widgetParameter:${args.widgetParameter}`)
-
+if (config.runsInWidget) {
     const widget = await createWidget();
     Script.setWidget(widget);
-
-    Safari.open('shortcuts://x-callback-url/run-shortcut?name=go_home')
-    Script.complete()
 } else {
-    if (config.runsInWidget) {
-        writeLOG(`runsInWidget:${config.runsInWidget}, runsInApp: ${config.runsInApp}, widgetParameter:${args.widgetParameter}`)
-        const widget = await createWidget();
-        Script.setWidget(widget);
-    } else {
-        writeLOG(`runsInWidget:${config.runsInWidget}, runsInApp: ${config.runsInApp}, widgetParameter:${args.widgetParameter}`)
-        await showMenu(Script.name(), gitHubUrl);
-    }
-
-    Script.complete();
+    await showMenu(Script.name(), gitHubUrl);
 }
+
+Script.complete();
