@@ -152,7 +152,7 @@ function getDate() {
   const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
   const weekday = weekdays[date.getDay()];
 
-  return `${month}月${day}号\n周${weekday}`;
+  return { date: `${month}月${day}号`, weekday: `周${weekday}` };
 }
 
 /*------------------------------------------------------------------------------------------------------------------
@@ -212,18 +212,18 @@ function createOverlay() {
   r = new Rect(xStart, yStart, image.size.width, image.size.height);
   imgCanvas.drawImageInRect(image, r);
 
+  const date = getDate();
   // 当前日期
-  r = new Rect(xStart + image.size.width + 25, yStart + 20, DEVICE_RESOLUTION.width - 400, 100);
-  imgCanvas.drawTextInRect(getDate(), r);
+  r = new Rect(xStart + image.size.width + 25, yStart + 10, DEVICE_RESOLUTION.width - 400, 100);
+  imgCanvas.drawTextInRect(date.date, r);
 
-  // 农历
-  // r = new Rect(xStart + image.size.width + 25, yStart + 100, DEVICE_RESOLUTION.width, 100);
-  // imgCanvas.drawTextInRect("333", r);
+  r = new Rect(xStart + image.size.width + 25, yStart + 110, DEVICE_RESOLUTION.width - 400, 100);
+  imgCanvas.drawTextInRect(date.weekday, r);
 
   // right
-  // imgCanvas.setTextAlignedRight();
-  // r = new Rect(DEVICE_RESOLUTION.width - 350, yStart + 25, 300, 100);
-  // imgCanvas.drawTextInRect("xx°", r);
+  imgCanvas.setTextAlignedRight();
+  r = new Rect(DEVICE_RESOLUTION.width - 350, yStart + 25, 300, 100);
+  imgCanvas.drawTextInRect("xx°", r);
 
   yStart = yStart + image.size.height + 50;
 
