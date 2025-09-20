@@ -2,6 +2,10 @@
 // These must be at the very top of the file. Do not edit.
 // icon-color: yellow; icon-glyph: file-alt;
 
+// 实现点击刷新再回到home screen
+// 组件点击打开url：shortcuts://x-callback-url/run-shortcut?name=refresh_script
+// 这个shortcut执行Refresh all scriptable 的scripts
+
 const gitHubUrl = "https://raw.githubusercontent.com/Abel-Liu/Scriptable-Code/refs/heads/main/my-notes.js"
 const x_budibase_api_key = "x-budibase-api-key"
 const x_budibase_app_id = "x-budibase-app-id"
