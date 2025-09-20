@@ -142,6 +142,19 @@ if (config.runsInApp) {
 else
   return overlayBase64String; // return to Shortcuts
 
+function getDate() {
+  const date = new Date();
+
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  // 星期映射（0=周日，1=周一...6=周六）
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const weekday = weekdays[date.getDay()];
+
+  return `${month}月${day}号\n周${weekday}`;
+}
+
 /*------------------------------------------------------------------------------------------------------------------
 *                                               FUNCTION DEFINITION
 ------------------------------------------------------------------------------------------------------------------*/
@@ -199,21 +212,18 @@ function createOverlay() {
   r = new Rect(xStart, yStart, image.size.width, image.size.height);
   imgCanvas.drawImageInRect(image, r);
 
-  // icon右侧文字
+  // 当前日期
   r = new Rect(xStart + image.size.width + 25, yStart + 20, DEVICE_RESOLUTION.width - 400, 100);
-  imgCanvas.drawTextInRect("大一", r);
+  imgCanvas.drawTextInRect(getDate(), r);
 
-  imgCanvas.setFont(allfonts.medium.font);
-  imgCanvas.setTextColor(new Color(textColor1));
-  r = new Rect(xStart + image.size.width + 25, yStart + 100, DEVICE_RESOLUTION.width, 100);
-  imgCanvas.drawTextInRect("333", r);
+  // 农历
+  // r = new Rect(xStart + image.size.width + 25, yStart + 100, DEVICE_RESOLUTION.width, 100);
+  // imgCanvas.drawTextInRect("333", r);
 
-  // Current temperature
-  imgCanvas.setFont(allfonts.extraLarge.font);
-  imgCanvas.setTextAlignedRight();
-  imgCanvas.setTextColor(new Color(textColor));
-  r = new Rect(DEVICE_RESOLUTION.width - 350, yStart + 25, 300, 200);
-  imgCanvas.drawTextInRect("44°", r);
+  // right
+  // imgCanvas.setTextAlignedRight();
+  // r = new Rect(DEVICE_RESOLUTION.width - 350, yStart + 25, 300, 100);
+  // imgCanvas.drawTextInRect("xx°", r);
 
   yStart = yStart + image.size.height + 50;
 
@@ -230,8 +240,6 @@ function createOverlay() {
   imgCanvas.setTextColor(new Color(textColor1));
   r = new Rect(xStart, yStart + 25, DEVICE_RESOLUTION.width - 100, 100);
   imgCanvas.drawTextInRect(`Updated at ${getCurrentTime()}`, r);
-
-  yStart = yStart + 150;
 
   newImage = imgCanvas.getImage();
   writeLOG("Overlay created successfully");
