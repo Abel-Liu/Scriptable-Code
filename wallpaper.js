@@ -288,21 +288,21 @@ function createOverlay() {
   r = new Rect(DEVICE_RESOLUTION.width - 350, yStart + 25, 300, 100);
   imgCanvas.drawTextInRect(getMyDay(), r);
 
-  yStart = yStart + image.size.height + 50;
-
-  // Heading
-  imgCanvas.setFont(allfonts.large.font);
-  imgCanvas.setTextAlignedLeft();
-  imgCanvas.setTextColor(new Color(textColor));
-  r = new Rect(xStart, yStart, DEVICE_RESOLUTION.width, 100);
-  imgCanvas.drawTextInRect("next 888", r);
-
   // Updated Date & Time
   imgCanvas.setFont(allfonts.small.font);
   imgCanvas.setTextAlignedRight();
   imgCanvas.setTextColor(new Color(textColor1));
-  r = new Rect(xStart, yStart + 25, DEVICE_RESOLUTION.width - 100, 100);
-  imgCanvas.drawTextInRect(`Updated at ${new Date().toLocaleTimeString()}}`, r);
+  r = new Rect(xStart, yStart + 100, DEVICE_RESOLUTION.width - 100, 100);
+  imgCanvas.drawTextInRect(`Updated at ${new Date().toLocaleTimeString()}`, r);
+
+  yStart = yStart + image.size.height + 50;
+
+  // Heading
+  // imgCanvas.setFont(allfonts.large.font);
+  // imgCanvas.setTextAlignedLeft();
+  // imgCanvas.setTextColor(new Color(textColor));
+  // r = new Rect(xStart, yStart, DEVICE_RESOLUTION.width, 100);
+  // imgCanvas.drawTextInRect("next 888", r);
 
   newImage = imgCanvas.getImage();
   writeLOG("Overlay created successfully");
