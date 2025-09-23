@@ -155,6 +155,69 @@ function getDate() {
   return { date: `${month}月${day}号`, weekday: `周${weekday}` };
 }
 
+// 计算两个日期之间的年、月、天差值
+function calculateTimeDifference(target) {
+  const now = new Date();
+  let diffInMs = now - target;
+
+  // 如果目标日期在未来，调换
+  if (diffInMs < 0) {
+    diffInMs = target - now
+  }
+
+  let years = now.getFullYear() - target.getFullYear();
+  let months = now.getMonth() - target.getMonth();
+  let days = now.getDate() - target.getDate();
+
+  // 调整月份和年份差异
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  // 调整天数差异（考虑不同月份的天数）
+  if (days < 0) {
+    months--;
+    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += prevMonth.getDate();
+
+    // 再次调整月份和年份（如果月份变为负数）
+    if (months < 0) {
+      months = 11;
+      years--;
+    }
+  }
+
+  return { years, months, days };
+}
+
+// 格式化时间差为可读字符串
+function formatTimeString(diff) {
+  const parts = [];
+  if (diff.years > 0) parts.push(`${diff.years}年`);
+  if (diff.months > 0) parts.push(`${diff.months}月`);
+  // 当天数为0但有年或月时不显示0天，否则至少显示天数
+  if (diff.days > 0 || parts.length === 0) parts.push(`${diff.days}天`);
+  return parts.join('');
+}
+
+function getMyDay() {
+  const dataPath = fileManager.joinPath(fileManager.documentsDirectory(), `Days.json`);
+
+  try {
+    if (fileManager.fileExists(dataPath)) {
+      const fileContent = fileManager.readString(dataPath);
+      dataList = JSON.parse(fileContent);
+      const item = dataList[0];
+      return formatTimeString(calculateTimeDifference(new Date(item.date)))
+    }
+  } catch (e) {
+    console.error(e.message);
+  }
+
+  return "No Data"
+}
+
 /*------------------------------------------------------------------------------------------------------------------
 *                                               FUNCTION DEFINITION
 ------------------------------------------------------------------------------------------------------------------*/
@@ -223,7 +286,7 @@ function createOverlay() {
   // right
   imgCanvas.setTextAlignedRight();
   r = new Rect(DEVICE_RESOLUTION.width - 350, yStart + 25, 300, 100);
-  imgCanvas.drawTextInRect("xx°", r);
+  imgCanvas.drawTextInRect(getMyDay(), r);
 
   yStart = yStart + image.size.height + 50;
 
