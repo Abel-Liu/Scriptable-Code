@@ -292,7 +292,7 @@ function createOverlay() {
   imgCanvas.setFont(allfonts.small.font);
   imgCanvas.setTextAlignedRight();
   imgCanvas.setTextColor(new Color(textColor1));
-  r = new Rect(xStart, yStart + 100, DEVICE_RESOLUTION.width - 100, 100);
+  r = new Rect(xStart, yStart + 120, DEVICE_RESOLUTION.width - 100, 100);
   imgCanvas.drawTextInRect(`Updated at ${new Date().toLocaleTimeString()}`, r);
 
   yStart = yStart + image.size.height + 50;
