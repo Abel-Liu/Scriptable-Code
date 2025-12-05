@@ -73,7 +73,7 @@ async function fetchPostApi() {
         if (response.status && response.status != 200)
             return { success: false, data: response.message || "" }
 
-        return { success: true, data: response.data.mynote, updated_at: response.data.updated_at };
+        return { success: true, data: response.mynote, updated_at: response.updated_at };
 
     } catch (error) {
         let errorMsg = "未知错误";
