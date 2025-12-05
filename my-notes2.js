@@ -1,0 +1,240 @@
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
+// icon-color: yellow; icon-glyph: file-alt;
+
+// 实现点击刷新再回到home screen
+// 组件点击打开url：shortcuts://x-callback-url/run-shortcut?name=refresh_script
+// 这个shortcut执行Refresh all scriptable 的scripts
+
+const gitHubUrl = "https://raw.githubusercontent.com/Abel-Liu/Scriptable-Code/refs/heads/main/my-notes2.js"
+const x_api_key = "x-api-key"
+
+
+// Determine if the user is using iCloud.
+let files = FileManager.local()
+const iCloudInUse = files.isFileStoredIniCloud(module.filename)
+const fileManager = iCloudInUse ? FileManager.iCloud() : FileManager.local()
+
+// 获取当前小组件尺寸
+const widgetSize = config.widgetFamily || "medium"; // 默认中等尺寸
+
+let { titleFontSize, padding } = getWidgetStyles(widgetSize);
+
+// 根据尺寸设置不同的字体大小和行间距
+function getWidgetStyles(widgetSize) {
+    let titleFontSize = 13;
+    let padding = 4;
+
+    switch (widgetSize) {
+        case "small":
+            titleFontSize = 13;
+            padding = 4;
+            break;
+        case "medium":
+        case "large":
+            titleFontSize = 15;
+            padding = 10;
+            break;
+    }
+
+    // 返回配置对象
+    return {
+        titleFontSize,
+        padding
+    };
+}
+
+const widgetBg = Color.dynamic(
+    new Color("#FFFFE0"),  // 浅色模式
+    new Color("#2c2c2e")   // 深色模式：深灰色背景
+);
+
+let titleTextColor = Color.dynamic(
+    new Color("#333333"),  // 浅色模式：深灰色文字
+    new Color("#e0e0e0")   // 深色模式：浅灰色文字
+);
+
+
+async function fetchPostApi() {
+    try {
+        if (!Keychain.contains(x_api_key)) {
+            return { success: false, data: "Keychain not configured." }
+        }
+
+        const request = new Request(`http://ty.readingcloud.top:18023/v1/rdbms/db/mynotes/one?fields=id,mynote,updated_at&filter=id==1`);
+        request.method = "GET";
+        request.headers = {
+            'accept': 'application/json',
+            'content-type': 'application/json',
+            'x-budibase-api-key': Keychain.get(x_api_key),
+        }
+
+        const response = await request.loadJSON();
+        if (response.status && response.status != 200)
+            return { success: false, data: response.message || "" }
+
+        return { success: true, data: response.data.mynote, updated_at: response.data.updated_at };
+
+    } catch (error) {
+        let errorMsg = "未知错误";
+        if (error instanceof Error) {
+            errorMsg = error.message;
+        } else if (error.statusCode) {
+            errorMsg = `HTTP 错误 ${error.statusCode}`; // 捕获 HTTP 状态码（如 404、500）
+        }
+        return { success: false, error: errorMsg };
+    }
+}
+
+async function downloadCode(filename, url) {
+    try {
+        const codeString = await new Request(url).loadString()
+        if (codeString.indexOf("// Variables used by Scriptable.") < 0) {
+            return false
+        } else {
+            fileManager.writeString(fileManager.joinPath(fileManager.documentsDirectory(), filename + ".js"), codeString)
+            return true
+        }
+    } catch (e) {
+        console.error(e.message)
+        return false
+    }
+}
+
+// Generate an alert with the provided array of options.
+async function generateAlert(title, options, message) {
+    return await generatePrompt(title, message, options)
+}
+
+// Default prompt for text field values.
+async function promptForText(title, textvals, placeholders, message) {
+    return await generatePrompt(title, message, null, textvals, placeholders)
+}
+
+// Generic implementation of an alert.
+async function generatePrompt(title, message, options, textvals, placeholders) {
+    const alert = new Alert()
+    alert.title = title
+    if (message) alert.message = message
+
+    const buttons = options || ["OK"]
+    for (button of buttons) { alert.addAction(button) }
+
+    if (!textvals) { return await alert.presentAlert() }
+
+    for (i = 0; i < textvals.length; i++) {
+        alert.addTextField(placeholders && placeholders[i] ? placeholders[i] : null, (textvals[i] || "") + "")
+    }
+
+    if (!options) await alert.present()
+    return alert
+}
+
+async function showMenu(codeFilename, gitHubUrl) {
+    const menu = {
+        preview: "Show widget preview",
+        edit: "Set API Key",
+        update: "Update code",
+        exit: "Exit",
+    }
+
+    //返回值是index，正好对应数组的index
+    const menuOptions = [menu.preview, menu.edit, menu.update, menu.exit]
+    const response = menuOptions[await generateAlert(`${codeFilename} Menu`, menuOptions)]
+
+    if (response == menu.preview) {
+        const preview_menu = {
+            Small: "Small",
+            Medium: "Medium",
+            Large: "Large",
+            exit: "Exit",
+        }
+
+        const previewMenuOptions = [preview_menu.Small, preview_menu.Medium, preview_menu.Large]
+        const preview_type = previewMenuOptions[await generateAlert("Preview", previewMenuOptions)]
+
+        if (preview_type != preview_menu.exit) {
+            ({ titleFontSize, padding } = getWidgetStyles(preview_type.toLowerCase()));
+
+            const multiLineCode = `
+                return (async () => {
+                    await widget.present${preview_type}();
+                })();
+                `;
+
+            const previewFun = new Function('widget', multiLineCode);
+
+            const widget = await createWidget();
+            await previewFun(widget);
+        }
+    }
+
+    if (response == menu.update) {
+        const success = await downloadCode(codeFilename, gitHubUrl)
+        return await generateAlert(success ? "Update complete." : "Update failed. Please try again later.")
+    }
+
+    if (response == menu.edit) {
+        await setAPIKey();
+    }
+
+    return
+}
+
+async function setAPIKey() {
+    let apikey = Keychain.contains(x_api_key) ? Keychain.get(x_api_key) : "";
+
+    const returnVal = await promptForText(
+        "Set API Key",
+        [apikey],
+        ["x_api_key"])
+
+    apikey = returnVal.textFieldValue(0)
+
+    Keychain.set(x_api_key, apikey)
+
+    await generateAlert("API Key已更新")
+}
+
+async function createWidget() {
+    const res = await fetchPostApi();
+    if (!res.success)
+        titleTextColor = new Color("#ff3b30")
+
+    const widget = new ListWidget();
+    widget.backgroundColor = widgetBg;
+    widget.setPadding(padding, padding, padding, padding);
+
+    const titleText = widget.addText(res.data)
+    titleText.font = Font.regularSystemFont(titleFontSize);
+    titleText.textColor = titleTextColor;
+    titleText.leftAlignText();
+
+    widget.addSpacer();
+    const updateTime = widget.addText(`编辑时间：${new Date(res.updated_at).toLocaleString()}  刷新时间：${new Date().toLocaleTimeString()}`);
+    updateTime.font = Font.systemFont(10);
+    updateTime.textColor = titleTextColor;
+    updateTime.centerAlignText();
+
+    return widget;
+}
+
+const LOG_FILE = fileManager.joinPath(fileManager.documentsDirectory(), `${Script.name()}.log`);
+const LOG_TO_FILE = false; // Only set to true if you want to debug any issue
+
+function writeLOG(logMsg) {
+    if (LOG_TO_FILE) {
+        fileManager.writeString(LOG_FILE, new Date().toLocaleString() + " - " + logMsg);
+    }
+    else
+        console.log(logMsg);
+}
+
+if (config.runsInWidget) {
+    const widget = await createWidget();
+    Script.setWidget(widget);
+} else {
+    await showMenu(Script.name(), gitHubUrl);
+}
+
+Script.complete();
