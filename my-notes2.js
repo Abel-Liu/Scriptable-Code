@@ -66,7 +66,7 @@ async function fetchPostApi() {
         request.headers = {
             'accept': 'application/json',
             'content-type': 'application/json',
-            'x-budibase-api-key': Keychain.get(x_api_key),
+            'X-API-KEY': Keychain.get(x_api_key),
         }
 
         const response = await request.loadJSON();
