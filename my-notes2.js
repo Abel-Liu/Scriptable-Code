@@ -61,7 +61,7 @@ async function fetchPostApi() {
             return { success: false, data: "Keychain not configured." }
         }
 
-        const request = new Request(`http://ty.readingcloud.top:18023/v1/rdbms/db/mynotes/one?fields=id,mynote,updated_at&filter=id==1`);
+        const request = new Request(`https://dbrest.readingcloud.top/v1/rdbms/db/mynotes/one?fields=id,mynote,updated_at&filter=id==1`);
         request.method = "GET";
         request.headers = {
             'accept': 'application/json',
