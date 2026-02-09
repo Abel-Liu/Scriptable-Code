@@ -55,13 +55,16 @@ let titleTextColor = Color.dynamic(
 );
 
 
-async function fetchPostApi() {
+async function fetchPostApi(id) {
     try {
         if (!Keychain.contains(x_api_key)) {
             return { success: false, data: "Keychain not configured." }
         }
 
-        const request = new Request(`https://dbrest.readingcloud.top/v1/rdbms/db/mynotes/one?fields=id,mynote,updated_at&filter=id==1`);
+        if (!id)
+            id = 1
+
+        const request = new Request(`https://dbrest.readingcloud.top/v1/rdbms/db/mynotes/one?fields=id,mynote,updated_at&filter=id==${id}`);
         request.method = "GET";
         request.headers = {
             'accept': 'application/json',
