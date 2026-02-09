@@ -55,16 +55,16 @@ let titleTextColor = Color.dynamic(
 );
 
 
-async function fetchPostApi(id) {
+async function fetchPostApi(noteid) {
     try {
         if (!Keychain.contains(x_api_key)) {
             return { success: false, data: "Keychain not configured." }
         }
 
-        if (!id)
-            id = 1
+        if (!noteid)
+            noteid = 1
 
-        const request = new Request(`https://dbrest.readingcloud.top/v1/rdbms/db/mynotes/one?fields=id,mynote,updated_at&filter=id==${id}`);
+        const request = new Request(`https://dbrest.readingcloud.top/v1/rdbms/db/mynotes/one?fields=id,mynote,updated_at&filter=id==${noteid}`);
         request.method = "GET";
         request.headers = {
             'accept': 'application/json',
@@ -200,7 +200,11 @@ async function setAPIKey() {
 }
 
 async function createWidget() {
-    const res = await fetchPostApi();
+    const noteid = args.widgetParameter
+    if (!noteid)
+        noteid = 1
+
+    const res = await fetchPostApi(noteid);
     if (!res.success)
         titleTextColor = new Color("#ff3b30")
 
