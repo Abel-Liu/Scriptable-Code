@@ -62,7 +62,7 @@ async function fetchPostApi(noteid) {
         }
 
         if (!noteid)
-            noteid = 1
+            noteid = "1"
 
         const request = new Request(`https://dbrest.readingcloud.top/v1/rdbms/db/mynotes/one?fields=id,mynote,updated_at&filter=id==${noteid}`);
         request.method = "GET";
@@ -200,10 +200,7 @@ async function setAPIKey() {
 }
 
 async function createWidget() {
-    const noteid = args.widgetParameter
-    if (!noteid)
-        noteid = 1
-
+    const noteid = args.widgetParameter ? args.widgetParameter.trim() : "1"
     const res = await fetchPostApi(noteid);
     if (!res.success)
         titleTextColor = new Color("#ff3b30")
