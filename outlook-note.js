@@ -143,7 +143,19 @@ async function showMenu(codeFilename, gitHubUrl) {
 }
 
 async function createWidget() {
-    const note = args.shortcutParameter ? args.shortcutParameter : "Empty Parameter"
+    const dataPath = fileManager.joinPath(fileManager.documentsDirectory(), 'outlooknote.txt');
+    let note = ''
+    try {
+        if (fileManager.fileExists(dataPath)) {
+            note = fileManager.readString(dataPath);
+        }
+        else {
+            // 文件不存在时创建默认文件
+            fileManager.writeString(dataPath, '');
+        }
+    } catch (e) {
+        console.error(e.message);
+    }
 
     const widget = new ListWidget();
     widget.backgroundColor = widgetBg;
